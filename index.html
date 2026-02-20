@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>eTender India — State & Central Procurement Portals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+:root{
+  --saffron:#FF6B00;--saffron-light:#FF9248;--saffron-glow:rgba(255,107,0,0.15);
+  --gold:#F5C842;--emerald:#00C896;
+  --bg:#080D22;--surface:#101530;--surface2:#161D3A;
+  --text:#EEF2FF;--text-sub:rgba(210,220,255,0.65);--text-muted:rgba(180,195,255,0.40);
+  --border:rgba(255,255,255,0.08);--border-h:rgba(255,255,255,0.18);
+  --shadow:0 2px 20px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-h:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(255,107,0,0.25),0 0 40px rgba(255,107,0,0.07);
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+body.light{
+  --bg:#F0F3FF;--surface:#FFFFFF;--surface2:#F5F7FF;
+  --text:#080D22;--text-sub:rgba(8,13,34,0.65);--text-muted:rgba(8,13,34,0.40);
+  --border:rgba(8,13,34,0.08);--border-h:rgba(8,13,34,0.2);
+  --shadow:0 2px 20px rgba(8,13,34,0.09),0 0 0 1px rgba(8,13,34,0.06);
+  --shadow-h:0 20px 60px rgba(8,13,34,0.18),0 0 0 1px rgba(255,107,0,0.35);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .4s,color .4s;min-height:100vh;}
+
+/* BG */
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.02)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02)1px,transparent 1px);
+  background-size:60px 60px;}
+body.light .bg-grid{background-image:linear-gradient(rgba(0,0,0,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.03)1px,transparent 1px);}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);animation:drift 20s ease-in-out infinite;}
+.blob-1{width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,0,.13),transparent 70%);top:-200px;right:-150px;animation-delay:0s;}
+.blob-2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,200,150,.08),transparent 70%);bottom:-100px;left:-100px;animation-delay:-8s;}
+.blob-3{width:400px;height:400px;background:radial-gradient(circle,rgba(245,200,66,.06),transparent 70%);top:40%;left:35%;animation-delay:-16s;}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(50px,-70px) scale(1.08);}66%{transform:translate(-40px,50px) scale(.95);}}
+
+.page{position:relative;z-index:1;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;height:66px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,5vw,64px);background:rgba(8,13,34,.72);backdrop-filter:blur(24px) saturate(1.5);
+  border-bottom:1px solid var(--border);transition:background .4s;}
+body.light .topbar{background:rgba(240,243,255,.82);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#FF6B00,#FF9248);
+  display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 18px rgba(255,107,0,.4);}
+.logo-name{font-size:1.05rem;font-weight:800;color:var(--text);letter-spacing:-.3px;}
+.logo-name em{color:var(--saffron);font-style:normal;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.top-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:var(--text-sub);font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .25s var(--ease);}
+.top-btn:hover{border-color:var(--saffron);background:var(--saffron-glow);color:var(--saffron-light);}
+body.light .top-btn{background:rgba(0,0,0,.03);}
+
+/* HERO */
+.hero{padding:clamp(56px,9vw,110px) clamp(16px,5vw,64px) clamp(40px,6vw,72px);text-align:center;position:relative;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;
+  border:1px solid rgba(255,107,0,.3);background:rgba(255,107,0,.09);color:var(--saffron-light);
+  font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:26px;
+  animation:fadeUp .7s var(--ease) both;}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--saffron);animation:pdot 2s infinite;}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.6);}}
+.hero-title{font-size:clamp(2.4rem,7.5vw,5.8rem);font-weight:800;line-height:1.04;letter-spacing:-2px;
+  margin-bottom:20px;animation:fadeUp .7s var(--ease) .1s both;}
+.hero-title .t1{display:block;color:var(--text);}
+.hero-title .t2{display:block;background:linear-gradient(135deg,var(--saffron) 0%,var(--gold) 55%,var(--saffron-light) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.18rem);color:var(--text-sub);max-width:520px;margin:0 auto 44px;line-height:1.75;
+  animation:fadeUp .7s var(--ease) .2s both;}
+
+/* STATS */
+.stats{display:flex;justify-content:center;align-items:center;gap:clamp(16px,3.5vw,56px);flex-wrap:wrap;
+  margin-bottom:50px;animation:fadeUp .7s var(--ease) .3s both;}
+.stat{text-align:center;}
+.stat-n{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+.stat-n.acc{background:linear-gradient(135deg,var(--saffron),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-n.plain{background:linear-gradient(135deg,var(--text) 0%,var(--text-sub) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+body.light .stat-n.plain{background:linear-gradient(135deg,#080D22 0%,rgba(8,13,34,.55) 100%);-webkit-background-clip:text;background-clip:text;}
+.stat-l{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);}
+.vline{width:1px;height:36px;background:var(--border);align-self:center;}
+
+/* SEARCH BAR */
+.search-wrap{max-width:680px;margin:0 auto;animation:fadeUp .7s var(--ease) .4s both;}
+.sbar{display:flex;align-items:center;gap:10px;background:var(--surface);
+  border:1.5px solid var(--border);border-radius:18px;padding:8px 8px 8px 18px;
+  transition:all .3s var(--ease);box-shadow:var(--shadow);}
+.sbar:focus-within{border-color:var(--saffron);box-shadow:0 0 0 4px rgba(255,107,0,.12),var(--shadow);}
+.sbar-ico{color:var(--text-muted);font-size:19px;flex-shrink:0;transition:color .2s;}
+.sbar:focus-within .sbar-ico{color:var(--saffron);}
+#search{flex:1;background:none;border:none;outline:none;font-family:var(--font);font-size:16px;font-weight:500;color:var(--text);caret-color:var(--saffron);}
+#search::placeholder{color:var(--text-muted);font-weight:400;}
+.kbd-hint{font-size:11px;font-weight:600;color:var(--text-muted);background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:6px;padding:2px 8px;letter-spacing:.5px;flex-shrink:0;}
+body.light .kbd-hint{background:rgba(0,0,0,.04);}
+.btn-x{width:32px;height:32px;border-radius:9px;border:none;background:rgba(255,107,0,.12);color:var(--saffron);
+  cursor:pointer;font-size:13px;display:none;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-x.on{display:flex;}.btn-x:hover{background:rgba(255,107,0,.25);transform:scale(1.1);}
+.qhints{margin-top:10px;font-size:12px;color:var(--text-muted);}
+.qhints span{display:inline-block;padding:2px 8px;border-radius:5px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);margin:2px;cursor:pointer;transition:all .2s;}
+.qhints span:hover{border-color:var(--saffron);color:var(--saffron);}
+body.light .qhints span{background:rgba(0,0,0,.04);}
+
+/* RESULTS BANNER */
+.rbanner{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s var(--ease),opacity .3s,padding .3s,margin .3s;
+  margin:0 clamp(16px,5vw,64px);padding:0;}
+.rbanner.on{max-height:80px;opacity:1;padding:13px 22px;margin:0 clamp(16px,5vw,64px);}
+.rbanner-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(135deg,rgba(255,107,0,.08),rgba(0,200,150,.06));
+  border:1px solid rgba(255,107,0,.18);border-radius:14px;padding:12px 20px;}
+.rbanner-text{font-size:14px;color:var(--text-sub);}
+.rbanner-text strong{color:var(--saffron);font-weight:700;}
+.rpills{display:flex;gap:8px;flex-wrap:wrap;}
+.rpill{padding:3px 11px;border-radius:100px;font-size:11.5px;font-weight:700;background:rgba(255,255,255,.05);
+  border:1px solid var(--border);color:var(--text-sub);}
+.rpill.o{background:rgba(255,107,0,.1);border-color:rgba(255,107,0,.25);color:var(--saffron);}
+.rpill.g{background:rgba(0,200,150,.09);border-color:rgba(0,200,150,.25);color:var(--emerald);}
+body.light .rpill{background:rgba(0,0,0,.04);}
+
+/* MAIN */
+.main{padding:30px clamp(16px,5vw,64px) 80px;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:52px;}
+
+/* SECTION */
+.section{animation:fadeUp .6s var(--ease) both;}
+.section:nth-child(1){animation-delay:.08s;}
+.section:nth-child(2){animation-delay:.16s;}
+.section:nth-child(3){animation-delay:.24s;}
+.section.gone{display:none;}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.sec-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.si-c{background:linear-gradient(135deg,#FF6B00,#FF9248);box-shadow:0 4px 18px rgba(255,107,0,.35);}
+.si-f{background:linear-gradient(135deg,#F5C842,#FF9248);box-shadow:0 4px 18px rgba(245,200,66,.3);}
+.si-s{background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 4px 18px rgba(102,126,234,.3);}
+.sec-meta{flex:1;min-width:0;}
+.sec-title{font-size:1.18rem;font-weight:800;color:var(--text);letter-spacing:-.3px;}
+.sec-sub{font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+.cbadge{padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  font-size:12px;font-weight:700;color:var(--text-muted);margin-left:auto;white-space:nowrap;transition:all .3s;}
+body.light .cbadge{background:rgba(0,0,0,.04);}
+.sec-rule{height:1px;background:linear-gradient(90deg,var(--saffron) 0%,transparent 60%);opacity:.25;margin-bottom:24px;}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:14px;}
+#centralSection .grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+
+/* CARD */
+.card{position:relative;border-radius:20px;background:var(--surface);border:1px solid var(--border);
+  overflow:hidden;transition:transform .35s var(--spring),box-shadow .35s var(--ease),border-color .25s;
+  box-shadow:var(--shadow);animation:cIn .5s var(--ease) both;display:flex;flex-direction:column;}
+@keyframes cIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
+.card:hover{transform:translateY(-8px) scale(1.015);box-shadow:var(--shadow-h);border-color:var(--border-h);}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .3s;pointer-events:none;}
+.card:hover::after{opacity:1;}
+/* glow per color family */
+.k0::after{background:radial-gradient(circle at 50% 0,rgba(102,126,234,.1),transparent 70%);}
+.k1::after{background:radial-gradient(circle at 50% 0,rgba(255,107,0,.1),transparent 70%);}
+.k2::after{background:radial-gradient(circle at 50% 0,rgba(0,200,150,.1),transparent 70%);}
+.k3::after{background:radial-gradient(circle at 50% 0,rgba(245,200,66,.1),transparent 70%);}
+.k4::after{background:radial-gradient(circle at 50% 0,rgba(240,147,251,.1),transparent 70%);}
+.k5::after{background:radial-gradient(circle at 50% 0,rgba(79,172,254,.1),transparent 70%);}
+.k6::after{background:radial-gradient(circle at 50% 0,rgba(67,233,123,.1),transparent 70%);}
+.k7::after{background:radial-gradient(circle at 50% 0,rgba(250,112,154,.1),transparent 70%);}
+.k8::after{background:radial-gradient(circle at 50% 0,rgba(161,140,209,.1),transparent 70%);}
+.k9::after{background:radial-gradient(circle at 50% 0,rgba(255,155,80,.1),transparent 70%);}
+
+.cstripe{height:5px;width:100%;flex-shrink:0;transition:height .3s;}
+.card:hover .cstripe{height:7px;}
+.k0 .cstripe,.k0 .cavatar{background:linear-gradient(135deg,#667eea,#764ba2);}
+.k1 .cstripe,.k1 .cavatar{background:linear-gradient(135deg,#FF6B00,#FF9248);}
+.k2 .cstripe,.k2 .cavatar{background:linear-gradient(135deg,#00C896,#00A3FF);}
+.k3 .cstripe,.k3 .cavatar{background:linear-gradient(135deg,#F5C842,#FF6B00);}
+.k4 .cstripe,.k4 .cavatar{background:linear-gradient(135deg,#f093fb,#f5576c);}
+.k5 .cstripe,.k5 .cavatar{background:linear-gradient(135deg,#4facfe,#00f2fe);}
+.k6 .cstripe,.k6 .cavatar{background:linear-gradient(135deg,#43e97b,#38f9d7);}
+.k7 .cstripe,.k7 .cavatar{background:linear-gradient(135deg,#fa709a,#fee140);}
+.k8 .cstripe,.k8 .cavatar{background:linear-gradient(135deg,#a18cd1,#fbc2eb);}
+.k9 .cstripe,.k9 .cavatar{background:linear-gradient(135deg,#ff9a56,#ff6a00);}
+
+.card-link{text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;
+  padding:18px 14px 20px;gap:10px;flex:1;}
+.cavatar{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0;position:relative;overflow:hidden;
+  transition:transform .3s var(--spring);}
+.cavatar::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 55%);}
+.card:hover .cavatar{transform:scale(1.1) rotate(-3deg);}
+.cname{font-size:13.5px;font-weight:700;text-align:center;color:var(--text);line-height:1.3;letter-spacing:-.1px;word-break:break-word;}
+.curl{font-size:11px;color:var(--text-muted);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;padding:0 4px;}
+.ctag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;border:1px solid;}
+.ctag-c{background:rgba(255,107,0,.1);border-color:rgba(255,107,0,.3);color:var(--saffron-light);}
+.ctag-s{background:rgba(0,200,150,.1);border-color:rgba(0,200,150,.3);color:var(--emerald);}
+
+.star-btn{position:absolute;top:13px;right:13px;width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--border);background:rgba(0,0,0,.3);backdrop-filter:blur(8px);
+  color:var(--text-muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s var(--spring);z-index:2;}
+body.light .star-btn{background:rgba(255,255,255,.65);}
+.star-btn:hover{transform:scale(1.22);border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.15);}
+.star-btn.on{background:rgba(245,200,66,.18);border-color:rgba(245,200,66,.5);color:var(--gold);}
+
+mark.hl{background:rgba(255,200,50,.28);color:var(--gold);border-radius:3px;padding:0 2px;font-weight:800;}
+body.light mark.hl{background:rgba(255,140,0,.18);color:#c04000;}
+
+/* EMPTY FAV */
+.efav{padding:44px 20px;text-align:center;border:1.5px dashed var(--border);border-radius:20px;background:rgba(255,255,255,.02);}
+body.light .efav{background:rgba(0,0,0,.02);}
+.efav-ico{font-size:42px;margin-bottom:14px;opacity:.45;}
+.efav-title{font-size:16px;font-weight:700;color:var(--text-sub);margin-bottom:6px;}
+.efav-sub{font-size:13px;color:var(--text-muted);line-height:1.6;}
+
+/* GLOBAL NO RESULTS */
+.gnr{padding:80px 20px;text-align:center;display:none;}
+.gnr.on{display:block;}
+.gnr-ico{font-size:72px;margin-bottom:20px;opacity:.35;}
+.gnr-title{font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.5px;}
+.gnr-sub{color:var(--text-muted);font-size:15px;max-width:340px;margin:0 auto 24px;line-height:1.65;}
+.gnr-sugs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.gnr-sug{padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  font-size:13px;color:var(--text-sub);cursor:pointer;transition:all .2s;}
+.gnr-sug:hover{border-color:var(--saffron);color:var(--saffron);background:var(--saffron-glow);}
+body.light .gnr-sug{background:rgba(0,0,0,.04);}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:26px clamp(16px,5vw,64px);display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.footer-brand{font-size:13.5px;color:var(--text-muted);font-weight:500;}
+.hrt{color:var(--saffron);display:inline-block;animation:hb 1.5s ease-in-out infinite;}
+@keyframes hb{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
+.footer-links{display:flex;gap:18px;}
+.footer-links a{font-size:13px;color:var(--text-muted);text-decoration:none;font-weight:500;transition:color .2s;}
+.footer-links a:hover{color:var(--saffron);}
+
+/* BACK TO TOP */
+.btt{position:fixed;bottom:26px;right:26px;width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--saffron),var(--saffron-light));border:none;color:#fff;font-size:20px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 22px rgba(255,107,0,.5);opacity:0;transform:translateY(16px) scale(.8);
+  transition:all .3s var(--spring);pointer-events:none;z-index:99;}
+.btt.on{opacity:1;transform:none;pointer-events:auto;}
+.btt:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 8px 30px rgba(255,107,0,.6);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero-title{letter-spacing:-1px;}
+  .vline{display:none;}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px;}
+  #centralSection .grid{grid-template-columns:1fr;}
+  .footer{flex-direction:column;text-align:center;}
+  .kbd-hint{display:none;}
+  .rbanner.on{max-height:none;}
+  .rbanner-inner{flex-direction:column;align-items:flex-start;gap:8px;}
+}
+@media(max-width:480px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stats{gap:18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-mesh">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="page">
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a class="logo" href="#">
+    <div class="logo-mark">🇮🇳</div>
+    <span class="logo-name">e<em>Tender</em> India</span>
+  </a>
+  <div class="topbar-right">
+    <button class="top-btn" onclick="toggleTheme()">
+      <span id="themeIco">☀️</span>
+      <span id="themeLbl">Light</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow"><span class="pulse-dot"></span>Official Government eTender Portals</div>
+  <h1 class="hero-title">
+    <span class="t1">India's Procurement</span>
+    <span class="t2">Portal Directory</span>
+  </h1>
+  <p class="hero-sub">Quick access to all State &amp; Central Government eTender and eProcurement portals — beautifully organised in one place.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n acc">29</div><div class="stat-l">States</div></div>
+    <div class="vline"></div>
+    <div class="stat"><div class="stat-n plain">4</div><div class="stat-l">Special Portals</div></div>
+    <div class="vline"></div>
+    <div class="stat"><div class="stat-n plain">1</div><div class="stat-l">Central Govt</div></div>
+    <div class="vline"></div>
+    <div class="stat"><div class="stat-n acc" id="favStat">0</div><div class="stat-l">Favorites</div></div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="sbar">
+      <span class="sbar-ico">🔍</span>
+      <input id="search" type="text" placeholder="Search state, portal or URL…" autocomplete="off" spellcheck="false">
+      <span class="kbd-hint">Press / to search</span>
+      <button class="btn-x" id="clearBtn">✕</button>
+    </div>
+    <div class="qhints">Try: <span onclick="qs('Bihar')">Bihar</span><span onclick="qs('Gujarat')">Gujarat</span><span onclick="qs('Railway')">Railway</span><span onclick="qs('Kerala')">Kerala</span><span onclick="qs('nicgep')">NIC Portal</span></div>
+  </div>
+</section>
+
+<!-- RESULTS BANNER -->
+<div class="rbanner" id="rbanner">
+  <div class="rbanner-inner">
+    <div class="rbanner-text">Results for <strong id="qlabel"></strong></div>
+    <div class="rpills" id="rpills"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Central -->
+  <div class="section" id="secCentral">
+    <div class="sec-head">
+      <div class="sec-icon si-c">🏛️</div>
+      <div class="sec-meta">
+        <div class="sec-title">Central Government</div>
+        <div class="sec-sub">National-level procurement portal</div>
+      </div>
+      <div class="cbadge" id="badgeCentral">1 Portal</div>
+    </div>
+    <div class="sec-rule"></div>
+    <div class="grid" id="gridCentral"></div>
+  </div>
+
+  <!-- Favorites -->
+  <div class="section" id="secFav">
+    <div class="sec-head">
+      <div class="sec-icon si-f">⭐</div>
+      <div class="sec-meta">
+        <div class="sec-title">Favorites</div>
+        <div class="sec-sub">Your bookmarked portals</div>
+      </div>
+      <div class="cbadge" id="badgeFav">0 Portals</div>
+    </div>
+    <div class="sec-rule"></div>
+    <div class="grid" id="gridFav"></div>
+    <div class="efav" id="emptyFav">
+      <div class="efav-ico">☆</div>
+      <div class="efav-title">No favorites yet</div>
+      <div class="efav-sub">Tap the ☆ on any portal card to bookmark it here for quick access.</div>
+    </div>
+  </div>
+
+  <!-- States -->
+  <div class="section" id="secStates">
+    <div class="sec-head">
+      <div class="sec-icon si-s">🗺️</div>
+      <div class="sec-meta">
+        <div class="sec-title">All States &amp; Special Portals</div>
+        <div class="sec-sub">Browse every Indian eTender portal</div>
+      </div>
+      <div class="cbadge" id="badgeStates">33 Portals</div>
+    </div>
+    <div class="sec-rule"></div>
+    <div class="grid" id="gridStates"></div>
+  </div>
+
+  <!-- No Results -->
+  <div class="gnr" id="gnr">
+    <div class="gnr-ico">🔍</div>
+    <div class="gnr-title">No portals found</div>
+    <div class="gnr-sub">We couldn't find anything matching your search. Try one of these:</div>
+    <div class="gnr-sugs">
+      <div class="gnr-sug" onclick="qs('Bihar')">Bihar</div>
+      <div class="gnr-sug" onclick="qs('Maharashtra')">Maharashtra</div>
+      <div class="gnr-sug" onclick="qs('Railway')">Railway</div>
+      <div class="gnr-sug" onclick="qs('CPPP')">CPPP</div>
+      <div class="gnr-sug" onclick="qs('nicgep')">NIC Portal</div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-brand">Crafted with <span class="hrt">❤</span> by Gunjan &nbsp;·&nbsp; gunjansingh9752@gmail.com · India eTender Directory</div>
+  <div class="footer-links">
+    <a href="https://eprocure.gov.in/eprocure/app" target="_blank" rel="noopener">CPPP Portal</a>
+    <a href="https://etenders.gov.in/eprocure/app" target="_blank" rel="noopener">eTenders India</a>
+  </div>
+</footer>
+</div>
+
+<button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* DATA */
+const CENTRAL = {"CPPP Portal":"https://eprocure.gov.in/eprocure/app"};
+const SPECIAL  = {
+  "eTender India":   "https://etenders.gov.in/eprocure/app",
+  "eProcs":          "https://eprocure.gov.in/eprocure/app",
+  "Water (IWAI)":    "https://iwai.nic.in/",
+  "Railway (IREPS)": "https://www.ireps.gov.in/"
+};
+const STATES = {
+  "Andhra Pradesh":"https://tender.apeprocurement.gov.in/login.html",
+  "Arunachal Pradesh":"https://arunachaltenders.gov.in/nicgep/app",
+  "Assam":"https://assamtenders.gov.in/",
+  "Bihar":"https://eproc2.bihar.gov.in/EPSV2Web/",
+  "Chhattisgarh":"https://eproc.cgstate.gov.in/CHEPS/security/getSignInAction.do",
+  "Goa":"https://eprocure.goa.gov.in/nicgep/app",
+  "Gujarat":"https://www.gujarattenders.in/",
+  "Haryana":"https://etenders.hry.nic.in/nicgep/app",
+  "Himachal Pradesh":"https://hptenders.gov.in/nicgep/app",
+  "Jammu & Kashmir":"https://jktenders.gov.in/nicgep/app",
+  "Jharkhand":"https://jharkhandtenders.gov.in/nicgep/app",
+  "Karnataka":"https://kppp.karnataka.gov.in/#/portal/portal-home",
+  "Kerala":"https://etenders.kerala.gov.in/nicgep/app",
+  "Madhya Pradesh":"https://mptenders.gov.in/nicgep/app",
+  "Maharashtra":"https://mahatenders.gov.in/nicgep/app",
+  "Manipur":"https://manipurtenders.gov.in/",
+  "Meghalaya":"https://meghalayatenders.gov.in/nicgep/app",
+  "Mizoram":"https://tender.mizoram.gov.in/",
+  "Nagaland":"https://nagalandtenders.gov.in/nicgep/app",
+  "Odisha":"https://tendersodisha.gov.in/nicgep/app",
+  "Punjab":"https://eproc.punjab.gov.in/nicgep/app",
+  "Rajasthan":"https://eproc.rajasthan.gov.in/nicgep/app",
+  "Sikkim":"https://sikkimtender.gov.in/nicgep/app",
+  "Tamil Nadu":"https://tntenders.gov.in/",
+  "Telangana":"https://tender.telangana.gov.in/login.html",
+  "Tripura":"https://tripuratenders.gov.in/",
+  "Uttar Pradesh":"https://etender.up.nic.in/nicgep/app",
+  "Uttarakhand":"https://uktenders.gov.in/nicgep/app/",
+  "West Bengal":"https://wbtenders.gov.in/nicgep/app"
+};
+const ALL = {...CENTRAL,...SPECIAL,...STATES};
+const COLS = ['k0','k1','k2','k3','k4','k5','k6','k7','k8','k9'];
+
+let favs = JSON.parse(localStorage.getItem('et_favs')||'[]');
+let Q = '';
+
+/* THEME */
+const savedTh = localStorage.getItem('et_theme')||'dark';
+if(savedTh==='light'){document.body.classList.add('light');setThemeUI(true);}
+function toggleTheme(){const l=document.body.classList.toggle('light');localStorage.setItem('et_theme',l?'light':'dark');setThemeUI(l);}
+function setThemeUI(l){document.getElementById('themeIco').textContent=l?'🌙':'☀️';document.getElementById('themeLbl').textContent=l?'Dark':'Light';}
+
+/* HELPERS */
+function ab(n){if(n.length<=3)return n.toUpperCase();const w=n.split(/[\s&()\-]+/).filter(Boolean);return(w.length===1?w[0].slice(0,2):w.map(x=>x[0]).join('')).slice(0,3).toUpperCase();}
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function hl(t,q){if(!q)return t;return t.replace(new RegExp(`(${esc(q)})`,'gi'),'<mark class="hl">$1</mark>');}
+function hit(n,u,q){if(!q)return true;const lq=q.toLowerCase();return n.toLowerCase().includes(lq)||u.toLowerCase().includes(lq);}
+function domain(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch{return u;}}
+function saveFavs(){localStorage.setItem('et_favs',JSON.stringify(favs));}
+
+/* TOGGLE FAV */
+function toggleFav(name,e){e&&e.stopPropagation();if(favs.includes(name))favs=favs.filter(f=>f!==name);else favs.unshift(name);saveFavs();renderAll();}
+
+/* CREATE CARD */
+function mkCard(name,url,idx,tag,q){
+  const col=COLS[idx%COLS.length];const isFav=favs.includes(name);
+  const card=document.createElement('div');card.className=`card ${col}`;card.style.animationDelay=`${idx*0.028}s`;
+  const stripe=document.createElement('div');stripe.className='cstripe';
+  const star=document.createElement('button');star.className=`star-btn${isFav?' on':''}`;
+  star.innerHTML=isFav?'⭐':'☆';star.title=isFav?'Remove from favorites':'Add to favorites';
+  star.addEventListener('click',e=>toggleFav(name,e));
+  const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.className='card-link';
+  const av=document.createElement('div');av.className='cavatar';av.textContent=ab(name);
+  const nm=document.createElement('div');nm.className='cname';nm.innerHTML=hl(name,q);
+  const ur=document.createElement('div');ur.className='curl';ur.textContent=domain(url);
+  link.appendChild(av);link.appendChild(nm);link.appendChild(ur);
+  if(tag){const tg=document.createElement('span');tg.className=`ctag ${tag==='c'?'ctag-c':'ctag-s'}`;tg.textContent=tag==='c'?'🇮🇳 Central Govt':'⚡ Special Portal';link.appendChild(tg);}
+  card.appendChild(stripe);card.appendChild(star);card.appendChild(link);
+  return card;
+}
+
+/* RENDER GRID */
+function renderGrid(gridId,badgeId,secId,entries,tag,q){
+  const grid=document.getElementById(gridId),badge=document.getElementById(badgeId),sec=document.getElementById(secId);
+  grid.innerHTML='';
+  const rows=Object.entries(entries).filter(([n,u])=>hit(n,u,q));
+  if(!rows.length){if(q)sec.classList.add('gone');else sec.classList.remove('gone');badge.textContent='0 Portals';return 0;}
+  sec.classList.remove('gone');
+  rows.forEach(([n,u],i)=>grid.appendChild(mkCard(n,u,i,tag,q)));
+  badge.textContent=rows.length+' Portal'+(rows.length!==1?'s':'');
+  return rows.length;
+}
+
+/* RENDER FAVS */
+function renderFavs(q){
+  const grid=document.getElementById('gridFav'),badge=document.getElementById('badgeFav');
+  const sec=document.getElementById('secFav'),empty=document.getElementById('emptyFav');
+  grid.innerHTML='';
+  document.getElementById('favStat').textContent=favs.length;
+  badge.textContent=favs.length+' Portal'+(favs.length!==1?'s':'');
+  if(!favs.length){empty.style.display='block';sec.classList.remove('gone');return 0;}
+  empty.style.display='none';
+  const rows=favs.filter(n=>ALL[n]&&hit(n,ALL[n],q));
+  if(q&&!rows.length){sec.classList.add('gone');return 0;}
+  sec.classList.remove('gone');
+  rows.forEach((n,i)=>grid.appendChild(mkCard(n,ALL[n],i,null,q)));
+  badge.textContent=rows.length+' Portal'+(rows.length!==1?'s':'');
+  return rows.length;
+}
+
+/* RESULTS BANNER */
+function renderBanner(q,cc,fc,sc){
+  const banner=document.getElementById('rbanner'),ql=document.getElementById('qlabel'),pills=document.getElementById('rpills');
+  const gnr=document.getElementById('gnr');
+  if(!q){banner.classList.remove('on');gnr.classList.remove('on');return;}
+  banner.classList.add('on');ql.textContent=`"${q}"`;pills.innerHTML='';
+  [['Central',cc,'o'],['Favorites',fc,'g'],['States & Portals',sc,'']].forEach(([l,c,cls])=>{
+    const p=document.createElement('span');p.className='rpill'+(cls?` ${cls}`:'');p.textContent=`${l}: ${c}`;pills.appendChild(p);});
+  (cc+fc+sc)===0?gnr.classList.add('on'):gnr.classList.remove('on');
+}
+
+/* MASTER RENDER */
+function renderAll(){
+  const q=Q.trim();
+  const cc=renderGrid('gridCentral','badgeCentral','secCentral',CENTRAL,'c',q);
+  const fc=renderFavs(q);
+  const merged={...Object.fromEntries(Object.entries(SPECIAL).sort((a,b)=>a[0].localeCompare(b[0]))),
+                ...Object.fromEntries(Object.entries(STATES).sort((a,b)=>a[0].localeCompare(b[0])))};
+  const sc=renderGrid('gridStates','badgeStates','secStates',merged,null,q);
+  renderBanner(q,cc,fc,sc);
+}
+
+/* SEARCH */
+const si=document.getElementById('search'),xb=document.getElementById('clearBtn');
+si.addEventListener('input',()=>{Q=si.value;xb.classList.toggle('on',Q.length>0);renderAll();});
+xb.addEventListener('click',()=>{si.value='';Q='';xb.classList.remove('on');si.focus();renderAll();});
+function qs(t){si.value=t;Q=t;xb.classList.add('on');renderAll();document.querySelector('.main')?.scrollIntoView({behavior:'smooth',block:'start'});}
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==si){e.preventDefault();si.focus();si.select();}
+  if(e.key==='Escape'&&document.activeElement===si){xb.click();si.blur();}
+});
+
+/* BACK TO TOP */
+window.addEventListener('scroll',()=>document.getElementById('btt').classList.toggle('on',scrollY>400));
+
+/* INIT */
+renderAll();
+</script>
+</body>
+</html>
